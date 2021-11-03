@@ -1,8 +1,8 @@
 import nltk
 import nltk.corpus
 from nltk.corpus import stopwords
-#nltk.download("stopwords")
-#nltk.download('punkt')
+nltk.download("stopwords")
+nltk.download('punkt')
 stop_words = set(stopwords.words('english'))
 from nltk.tokenize import word_tokenize
 from nltk.corpus import PlaintextCorpusReader
@@ -31,6 +31,7 @@ py.init_notebook_mode(connected=True)
 import plotly.graph_objs as go
 import plotly.tools as tls
 import plotly.express as px
+import plotly.io as pio
 
 import pandas as pd
 import numpy as np
@@ -46,13 +47,90 @@ from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 analyzer = SentimentIntensityAnalyzer()
 
-all_speechs = pd.read_csv('C:/Users/renje/Documents/Research Project/data/presidential_speeches.csv')
+import requests
+import io
+    
+
+
+pio.renderers.default = "browser"
+
+# Downloading the csv file from your GitHub account
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/presidential_speeches.csv" 
+download = requests.get(url).content
+all_speechs = pd.read_csv(io.StringIO(download.decode('utf-8')))
 all_speechs['Transcript'] = all_speechs['Transcript'].astype(str)
 
-president_list = ['Barack Obama', 'George W. Bush', 'Bill Clinton', 'George H. W. Bush']
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/obama.csv" 
+download = requests.get(url).content
+obama_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/bush43.csv" 
+download = requests.get(url).content
+bush43_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/bush41.csv" 
+download = requests.get(url).content
+bush41_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/clinton.csv" 
+download = requests.get(url).content
+clinton_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/reagan.csv" 
+download = requests.get(url).content
+reagan_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/carter.csv" 
+download = requests.get(url).content
+carter_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/eisenhower.csv" 
+download = requests.get(url).content
+eisenhower_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/ford.csv" 
+download = requests.get(url).content
+ford_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/johnson.csv" 
+download = requests.get(url).content
+johnson_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/kennedy.csv" 
+download = requests.get(url).content
+kennedy_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/nixon.csv" 
+download = requests.get(url).content
+nixon_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/truman.csv" 
+download = requests.get(url).content
+truman_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+url = "https://raw.githubusercontent.com/kelloggjohnd/Final_project/main/data/approval_ratings/trump.csv" 
+download = requests.get(url).content
+trump_approval = pd.read_csv(io.StringIO(download.decode('utf-8')))
+
+#all_speechs = pd.read_csv('C:/Users/renje/Documents/Research Project/data/presidential_speeches.csv')
+all_speechs['Transcript'] = all_speechs['Transcript'].astype(str)
+
+president_list = ['Harry S. Truman',
+'Richard M. Nixon',
+'Dwight D. Eisenhower',
+'John F. Kennedy',
+'Lyndon B. Johnson',
+'Ronald Reagan',
+'Gerald Ford',
+'Jimmy Carter',
+'George H. W. Bush',
+'Bill Clinton',
+'George W. Bush',
+'Barack Obama']
 president_nsw = all_speechs[all_speechs.President.isin(president_list)]
 
-obama_nsw = all_speechs[(all_speechs["President"] == "Barack Obama"]
+obama_nsw = all_speechs[all_speechs["President"] == "Barack Obama"]
 
 obama_nsw['Transcript']=obama_nsw['Transcript'].str.lower()
 obama_nsw['Transcript']=obama_nsw['Transcript'].str.strip().str.replace('[^\w\s]','')
@@ -61,55 +139,40 @@ pat = r'\b(?:{})\b'.format('|'.join(stop_words))
 obama_nsw['Transcript'] = obama_nsw['Transcript'].str.replace(pat, '')
 
 transcript_blob = [TextBlob(desc) for desc in obama_nsw['Transcript']]
-obama_nsw['tb_Pol'] = [b.sentiment.polarity for b in transcript_blob]
-obama_nsw['tb_Subj'] = [b.sentiment.subjectivity for b in transcript_blob]
+obama_nsw['Polarity'] = [b.sentiment.polarity for b in transcript_blob]
+obama_nsw['Subjectivity'] = [b.sentiment.subjectivity for b in transcript_blob]
 obama_nsw['compound'] = [analyzer.polarity_scores(v)['compound'] for v in obama_nsw['Transcript']]
-obama_nsw['neg'] = [analyzer.polarity_scores(v)['neg'] for v in obama_nsw['Transcript']]
-obama_nsw['neu'] = [analyzer.polarity_scores(v)['neu'] for v in obama_nsw['Transcript']]
-obama_nsw['pos'] = [analyzer.polarity_scores(v)['pos'] for v in obama_nsw['Transcript']]
+obama_nsw['Negative'] = [analyzer.polarity_scores(v)['neg'] for v in obama_nsw['Transcript']]
+obama_nsw['Neutral'] = [analyzer.polarity_scores(v)['neu'] for v in obama_nsw['Transcript']]
+obama_nsw['Positive'] = [analyzer.polarity_scores(v)['pos'] for v in obama_nsw['Transcript']]
 
+fig = px.bar(obama_approval, x='Start Date', y=['Disapproving', 'Unsure/NoData', 'Approving'], 
+             title="Obama Approval Numbers",
+            color_discrete_map={
+        'Disapproving': 'red',
+        'Unsure/NoData': 'orange',
+        'Approving': 'green'
+    })
+fig.show()
 
-labels = obama_nsw['Date']
-neg = obama_nsw['neg']
-neu = obama_nsw['neu']
-pos = obama_nsw['pos']
+fig = px.line(obama_nsw, x='Date', y=['Polarity'], title="Obama Polarity")
+fig.show()
 
-width = 0.35       # the width of the bars: can also be len(x) sequence
+fig = px.line(obama_nsw, x='Date', y=['Subjectivity'], title="Obama Subjectivity")
+fig.show()
 
-fig, ax = plt.subplots()
+fig = px.bar(obama_nsw, x='Date', y=['Negative', 'Neutral', 'Positive'], title="Obama Sentiment Numbers", color_discrete_map={
+        'Negative': 'red',
+        'Neutral': 'orange',
+        'Positive': 'green'
+    })
+fig.update_layout(xaxis = dict(type="category"))
 
-ax.bar(labels, neg, width, label='Negative', color='red')
-ax.bar(labels, neu, width, bottom=neg, label='Neutral', color ='gray')
-ax.bar(labels, pos, width, bottom=neg+neu, label='Postive',color = 'green')
+fig.show()
 
-plt.setp( ax.xaxis.get_majorticklabels(), rotation=-45, ha="left", rotation_mode="anchor", fontsize = 9) 
-ax.set_ylabel('Scores')
-ax.set_title('Obama Scores by Date')
-ax.legend()
+#####BUSH 43#####
 
-plt.show()
-
-plt.plot(obama_nsw.Date, obama_nsw.tb_Pol)
-plt.title('Obama Polarity')
-plt.xlabel ('Date')
-plt.ylabel ('Polarity')
-plt.show()
-
-plt.plot(obama_nsw.Date, obama_nsw.tb_Subj)
-plt.title('Obama Subjective')
-plt.xlabel ('Date')
-plt.ylabel ('Subjective')
-plt.show()
-
-plt.plot(obama_nsw.Date, obama_nsw.tb_Pol, label = 'Polarity')
-plt.plot(obama_nsw.Date, obama_nsw.tb_Subj, label = 'Subjective')
-plt.title('Obama combined')
-plt.xlabel ('Date')
-plt.ylabel ('Polarity')
-plt.legend()
-plt.show()
-
-
+###DATA###
 bush_nsw = all_speechs[all_speechs["President"] == "George W. Bush"]
 
 bush_nsw['Transcript']=bush_nsw['Transcript'].str.lower()
@@ -126,7 +189,7 @@ bush_nsw['neg'] = [analyzer.polarity_scores(v)['neg'] for v in bush_nsw['Transcr
 bush_nsw['neu'] = [analyzer.polarity_scores(v)['neu'] for v in bush_nsw['Transcript']]
 bush_nsw['pos'] = [analyzer.polarity_scores(v)['pos'] for v in bush_nsw['Transcript']]
 
-
+###GRAPHS
 labels = bush_nsw['Date']
 neg = bush_nsw['neg']
 neu = bush_nsw['neu']
@@ -135,23 +198,41 @@ pos = bush_nsw['pos']
 width = 0.35       # the width of the bars: can also be len(x) sequence
 
 fig, ax = plt.subplots()
+ax.bar(labels, neg, width, label='Negative', color='red')
+ax.bar(labels, neu, width, bottom=neg,label='Neutral', color ='gray')
+ax.bar(labels, pos, width, bottom=neg+neu, label='Postive', color = 'green')
+plt.setp( ax.xaxis.get_majorticklabels(), rotation=-45, ha="left", rotation_mode="anchor", fontsize = 9) 
+ax.set_ylabel('Scores')
+ax.set_title('GW Bush Sentiment Scores by Date')
+ax.legend()
+plt.show()
+
+labels = bush43_approval['Start Date']
+neg = bush43_approval['Unsure/NoData']
+neu = bush43_approval['Disapproving']
+pos = bush43_approval['Approving']
+
+fig, ax = plt.subplots()
 
 ax.bar(labels, neg, width, label='Negative', color='red')
 ax.bar(labels, neu, width, bottom=neg,label='Neutral', color ='gray')
 ax.bar(labels, pos, width, bottom=neg+neu, label='Postive', color = 'green')
 
-plt.setp( ax.xaxis.get_majorticklabels(), rotation=-45, ha="left", rotation_mode="anchor", fontsize = 9) 
+#plt.setp( ax.xaxis.get_majorticklabels(), rotation=-45, ha="left", rotation_mode="anchor", fontsize = 9) 
+plt.xticks(rotation=45, ha='right', fontsize = 9)
 ax.set_ylabel('Scores')
-ax.set_title('GW Bush Scores by Date')
+ax.set_title('GW Bush Approval Scores by Date')
 ax.legend()
-
 plt.show()
 
+fig = plt.figure() 
 plt.plot(bush_nsw.Date, bush_nsw.tb_Pol)
+#fig.autofmt_xdate(rotation=45)
+plt.xticks(rotation=45, ha='right')
 plt.title('Bush44 Polarity')
-plt.xlabel ('Date')
 plt.ylabel ('Polarity')
 plt.show()
+
 
 plt.plot(bush_nsw.Date, bush_nsw.tb_Subj)
 plt.title('Bush44 Subjective')
