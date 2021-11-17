@@ -124,7 +124,7 @@ def week_number_speeches (df):
 
 def data_merge (speeches, approval):
     df = speeches.merge(approval,how='inner', left_on='week_year', right_on='week_year')
-    df = df[['Date','Polarity','Subjectivity','compound','Negative','Neutral','Positive', 'Approve_change','Disapprove_change','Unsure_change']]
+    df = df[['Date','Polarity','Subjectivity','compound','Negative','Neutral','Positive', 'Approve_change','Disapprove_change','Unsure_change','week_year']]
     
     return df
 
@@ -239,7 +239,7 @@ bush43_merge = data_merge(bush43_speeches,bush43_approval)
 
 clinton_approval = week_number_approve(clinton_approval)
 clinton_speeches = week_number_speeches(clinton_speeches)
-bush43_merge = data_merge(clinton_speeches,clinton_approval)
+clinton_merge = data_merge(clinton_speeches,clinton_approval)
 
 bush41_approval = week_number_approve(bush41_approval)
 bush41_speeches = week_number_speeches(bush41_speeches)
@@ -277,7 +277,38 @@ truman_approval = week_number_approve(truman_approval)
 truman_speeches = week_number_speeches(truman_speeches)
 truman_merge = data_merge(truman_speeches,truman_approval)
 
+
+All_merge = pd.concat([obama_merge,bush43_merge])
+All_merge = pd.concat([All_merge,clinton_merge])
+All_merge = pd.concat([All_merge,bush41_merge])
+All_merge = pd.concat([All_merge,reagan_merge])
+All_merge = pd.concat([All_merge,carter_merge])
+All_merge = pd.concat([All_merge,ford_merge])
+All_merge = pd.concat([All_merge,nixon_merge])
+All_merge = pd.concat([All_merge,johnson_merge])
+All_merge = pd.concat([All_merge,kennedy_merge])
+All_merge = pd.concat([All_merge,eisenhower_merge])
+All_merge = pd.concat([All_merge,truman_merge])
+
+All_merge = All_merge.drop(['week_year'],axis=1)
+
 ###########Graphics###########
+
+corr = All_merge.corr()
+
+sns.heatmap(corr)
+
+ax = sns.heatmap(
+    corr, 
+    vmin=-1, vmax=1, center=0,
+    cmap=sns.diverging_palette(20, 220, n=200),
+    square=True
+)
+ax.set_xticklabels(
+    ax.get_xticklabels(),
+    rotation=45,
+    horizontalalignment='right'
+);
 
 ############Obama##############
 obama_polarity = long_form(obama_merge, 'Polarity')
