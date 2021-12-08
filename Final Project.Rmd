@@ -1,0 +1,187 @@
+---
+title: "Final Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(ggcorrplot)
+library(GGally)
+```
+
+```{r}
+library(readr)
+merged <- read_csv("C:/Users/renje/Documents/GitHub/Final_project/data/approval_ratings/Adjusted/merged.csv")
+```
+
+```{r}
+merged_numbers <- merged %>%
+  select(-1, -Date, -President, -compound)
+
+#merged_numbers[] <- lapply(merged_numbers, function(x) as.numeric(as.character(x)))
+corr <- round(cor(merged_numbers),1)
+
+#head(corr[,1:6])
+```
+
+```{r}
+
+merged_numbers <- merged%>%
+  rename(APP = Approving)%>%
+  rename(DIS = Disapproving)%>%
+  rename(UNS = `Unsure/NoData`)%>%
+  rename(APPC = Approve_change)%>%
+  rename(DISC = Disapprove_change)%>%
+  rename(UNSC = Unsure_change)%>%
+  rename(POL = Polarity)%>%
+  rename(SUB = Subjectivity)%>%
+  rename(NEG = Negative)%>%
+  rename(NEU = Neutral)%>%
+  rename(POS = Positive)
+
+merged_numbers_all <- merged_numbers %>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(merged_numbers_all, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "All Presidents Coorelation Plot")
+```
+
+```{r}
+ggcorrplot(corr, hc.order = FALSE,lab = TRUE, title = "All Presidents Coorelation Plot")
+```
+
+```{r}
+truman_numbers <- merged_numbers %>%
+  filter(President == "Harry S. Truman")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(truman_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Truman Coorelation Plot")
+
+```
+
+```{r}
+Eisenhower_numbers <- merged_numbers %>%
+  filter(President == "Dwight D. Eisenhower")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Eisenhower_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Eisenhower Coorelation Plot")
+```
+```{r}
+kennedy_numbers <- merged_numbers %>%
+  filter(President == "John F. Kennedy")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(kennedy_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Kennedy Coorelation Plot")
+```
+
+```{r}
+Johnson_numbers <- merged_numbers %>%
+  filter(President == "Lyndon B. Johnson")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Johnson_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Johnson Coorelation Plot")
+```
+
+```{r}
+Nixon_numbers <- merged_numbers %>%
+  filter(President == "Richard M. Nixon")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Nixon_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Nixon Coorelation Plot")
+```
+
+```{r}
+Ford_numbers <- merged_numbers %>%
+  filter(President == "Gerald Ford")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Ford_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Ford Coorelation Plot")
+```
+
+```{r}
+Carter_numbers <- merged_numbers %>%
+  filter(President == "Jimmy Carter")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Carter_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Carter Coorelation Plot")
+```
+
+```{r}
+Reagan_numbers <- merged_numbers %>%
+  filter(President == "Ronald Reagan")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Reagan_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Reagan Coorelation Plot")
+```
+
+```{r}
+Bush41_numbers <- merged_numbers %>%
+  filter(President == "George H. W. Bush")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Bush41_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "H.W.Bush Coorelation Plot")
+```
+
+```{r}
+Clinton_numbers <- merged_numbers %>%
+  filter(President == "Bill Clinton")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Clinton_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Clinton Coorelation Plot")
+```
+
+```{r}
+Bush43_numbers <- merged_numbers %>%
+  filter(President == "George W. Bush")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Bush43_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "W.Bush Coorelation Plot")
+```
+
+```{r}
+Obama_numbers <- merged_numbers %>%
+  filter(President == "Barack Obama")%>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(Obama_numbers, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Obama Coorelation Plot")
+```
+```{r}
+Group_1 <-  c('Harry S. Truman', "Richard M. Nixon","Jimmy Carter","George H. W. Bush", "George W. Bush")
+
+merged_group_1 <- merged_numbers%>%
+  filter (President %in% Group_1)
+
+merged_group_1 <- merged_group_1 %>%
+  select(-1, -Date, -President, -compound)
+
+merged_group_2 <- merged_numbers%>%
+  filter (!President %in% Group_1)
+
+merged_group_2 <- merged_group_2 %>%
+  select(-1, -Date, -President, -compound)
+
+ggcorr(merged_group_1, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Group1 Correlation Plot")
+```
+
+```{r}
+ggcorr(merged_group_2, method = c("everything", "pearson"), label = TRUE, legend.position = "right", label_size = 4,hjust = .5, size = 3, low = "midnightblue", mid = "white", high = "darkred")+
+  labs(title = "Group2 Correlation Plot")
+```
+
+
+
